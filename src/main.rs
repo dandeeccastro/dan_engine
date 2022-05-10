@@ -67,6 +67,103 @@ mod chess {
             return (bitboard << 7) & NOT_A_FILE; 
         }
 
+        fn north_slide(mut bitboard:u64, empty:u64) -> u64 {
+            let mut flood: u64 = bitboard;
+            for i in 0..5 {
+                bitboard = north(bitboard) & empty;
+                flood |= bitboard;
+            }
+            flood |= north(bitboard) & empty;
+            return north(flood);
+        }
+
+        fn south_slide(mut bitboard:u64, empty:u64) -> u64 {
+            let mut flood: u64 = bitboard;
+            for i in 0..5 {
+                bitboard = south(bitboard) & empty;
+                flood |= bitboard;
+            }
+            flood |= south(bitboard) & empty;
+            return south(flood);
+        }
+
+        fn east_slide(mut bitboard:u64, mut empty:u64) -> u64 {
+            let mut flood: u64 = bitboard;
+            empty &= NOT_A_FILE;
+
+            for i in 0..5 {
+                bitboard = east(bitboard) & empty;
+                flood |= bitboard;
+            }
+            flood |= east(bitboard) & empty;
+            return east(bitboard) & NOT_A_FILE;
+        }
+
+        fn west_slide(mut bitboard:u64, mut empty:u64) -> u64 {
+            let mut flood: u64 = bitboard;
+            empty &= NOT_H_FILE;
+
+            for i in 0..5 {
+                bitboard = east(bitboard) & empty;
+                flood |= bitboard;
+            }
+
+            flood |= east(bitboard) & empty;
+            return east(bitboard) & NOT_H_FILE;
+        }
+
+        fn northeast_slide(mut bitboard:u64, mut empty:u64) -> u64 {
+            let mut flood:u64 = bitboard;
+            empty &= NOT_A_FILE;
+
+            for i in 0..5 {
+                bitboard = northeast(bitboard) & empty;
+                flood |= bitboard;
+            }
+
+            flood |= northeast(bitboard) & empty;
+            return northeast(bitboard) & NOT_A_FILE;
+        }
+
+        fn southeast_slide(mut bitboard:u64, mut empty:u64) -> u64 {
+            let mut flood:u64 = bitboard;
+            empty &= NOT_A_FILE;
+
+            for i in 0..5 {
+                bitboard = southeast(bitboard) & empty;
+                flood |= bitboard;
+            }
+
+            flood |= southeast(bitboard) & empty;
+            return southeast(bitboard) & NOT_A_FILE;
+        }
+
+        fn northwest_slide(mut bitboard:u64, mut empty:u64) -> u64 {
+            let mut flood:u64 = bitboard;
+            empty &= NOT_H_FILE;
+
+            for i in 0..5 {
+                bitboard = northwest(bitboard) & empty;
+                flood |= bitboard;
+            }
+
+            flood |= northwest(bitboard) & empty;
+            return northwest(bitboard) & NOT_H_FILE;
+        }
+
+        fn southwest_slide(mut bitboard:u64, mut empty:u64) -> u64 {
+            let mut flood:u64 = bitboard;
+            empty &= NOT_H_FILE;
+
+            for i in 0..5 { 
+                bitboard = southwest(bitboard) & empty;
+                flood |= bitboard;
+            }
+
+            flood |= southwest(bitboard) & empty;
+            return southwest(bitboard) & NOT_H_FILE;
+        }
+
         pub fn knights(bitboard:u64) -> u64 {
             let res:u64 = 
                 south(southwest(bitboard)) | 
@@ -106,6 +203,29 @@ mod chess {
                 (southwest(bitboard) & empty) | 
                 (northeast(bitboard) & empty) | 
                 (northwest(bitboard) & empty);
+            return res;
+        }
+
+        pub fn rooks(bitboard:u64, empty:u64) -> u64 {
+            let res: u64 = 
+                south_slide(bitboard, empty) |
+                north_slide(bitboard, empty) |
+                east_slide(bitboard, empty) |
+                west_slide(bitboard, empty);
+            return res;
+        }
+
+        pub fn bishops(bitboard:u64, empty:u64) -> u64 {
+            let res: u64 = 
+                southwest_slide(bitboard, empty) | 
+                southeast_slide(bitboard, empty) | 
+                northwest_slide(bitboard, empty) |
+                northeast_slide(bitboard, empty);
+            return res;
+        }
+
+        pub fn queen(bitboard:u64, empty:u64) -> u64 {
+            let res:u64 = rooks(bitboard, empty) | bishops(bitboard,empty);
             return res;
         }
 
