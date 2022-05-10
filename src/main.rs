@@ -43,18 +43,71 @@ mod chess {
     }
 
     mod movement {
-        priv let not_a_file: u64 = 0xfefefefefefefefe;
-        priv let not_h_file: u64 = 0x7f7f7f7f7f7f7f7f;
+        const NOT_A_FILE: u64 = 0xfefefefefefefefe;
+        const NOT_H_FILE: u64 = 0x7f7f7f7f7f7f7f7f;
 
-        pub fn south(bitboard:u64)     { return bitboard >> 8; } 
-        pub fn north(bitboard:u64)     { return bitboard << 8; } 
+        fn south(bitboard:u64) -> u64 { return bitboard >> 8; } 
+        fn north(bitboard:u64) -> u64 { return bitboard << 8; } 
+        fn east(bitboard:u64)  -> u64 { 
+            return (bitboard >> 1) & NOT_H_FILE; 
+        } 
+        fn west(bitboard:u64)  -> u64 { 
+            return (bitboard << 1) & NOT_A_FILE; 
+        } 
+        fn southeast(bitboard:u64) -> u64 { 
+            return (bitboard >> 7) & NOT_H_FILE; 
+        } 
+        fn southwest(bitboard:u64) -> u64 { 
+            return (bitboard >> 9) & NOT_H_FILE; 
+        } 
+        fn northeast(bitboard:u64) -> u64 { 
+            return (bitboard << 9) & NOT_A_FILE; 
+        }
+        fn northwest(bitboard:u64) -> u64 { 
+            return (bitboard << 7) & NOT_A_FILE; 
+        }
 
-        pub fn east(bitboard:u64)      { return (bitboard >> 1) & not_h_file; } 
-        pub fn west(bitboard:u64)      { return (bitboard << 1) & not_a_file; } 
-        pub fn southeast(bitboard:u64) { return (bitboard >> 7) & not_h_file; } 
-        pub fn southwest(bitboard:u64) { return (bitboard >> 9) & not_h_file; } 
-        pub fn northeast(bitboard:u64) { return (bitboard << 9) & not_a_file; }
-        pub fn northwest(bitboard:u64) { return (bitboard << 7) & not_a_file; }
+        pub fn knights(bitboard:u64) -> u64 {
+            let res:u64 = 
+                south(southwest(bitboard)) & 
+                west(southwest(bitboard)) & 
+                south(southeast(bitboard)) & 
+                east(southeast(bitboard)) & 
+                north(northwest(bitboard)) & 
+                west(northwest(bitboard)) & 
+                north(northeast(bitboard)) & 
+                east(northeast(bitboard));
+            return res;
+        }
+
+        pub fn w_single_pawn_push(bitboard:u64) -> u64 {
+            return north(bitboard);
+        }
+
+        pub fn w_double_pawn_push(bitboard:u64) -> u64 {
+            return north(north(bitboard));
+        }
+
+        pub fn b_single_pawn_push(bitboard:u64) -> u64 { 
+            return south(bitboard);
+        }
+
+        pub fn b_double_pawn_push(bitboard:u64) -> u64 {
+            return south(south(bitboard));
+        }
+
+        pub fn kings(bitboard:u64) -> u64 {
+            let res: u64 = 
+                north(bitboard) & 
+                south(bitboard) & 
+                east(bitboard) & 
+                west(bitboard) & 
+                southeast(bitboard) & 
+                southwest(bitboard) & 
+                northeast(bitboard) & 
+                northwest(bitboard);
+            return res;
+        }
     }
 }
 
