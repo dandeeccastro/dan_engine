@@ -69,45 +69,46 @@ mod chess {
 
         pub fn knights(bitboard:u64) -> u64 {
             let res:u64 = 
-                south(southwest(bitboard)) & 
-                west(southwest(bitboard)) & 
-                south(southeast(bitboard)) & 
-                east(southeast(bitboard)) & 
-                north(northwest(bitboard)) & 
-                west(northwest(bitboard)) & 
-                north(northeast(bitboard)) & 
+                south(southwest(bitboard)) | 
+                west(southwest(bitboard)) | 
+                south(southeast(bitboard)) | 
+                east(southeast(bitboard)) | 
+                north(northwest(bitboard)) | 
+                west(northwest(bitboard)) | 
+                north(northeast(bitboard)) | 
                 east(northeast(bitboard));
             return res;
         }
 
-        pub fn w_single_pawn_push(bitboard:u64) -> u64 {
-            return north(bitboard);
+        pub fn w_single_pawn_push(bitboard:u64, empty:u64) -> u64 {
+            return north(bitboard) & empty;
         }
 
-        pub fn w_double_pawn_push(bitboard:u64) -> u64 {
-            return north(north(bitboard));
+        pub fn w_double_pawn_push(bitboard:u64, empty:u64) -> u64 {
+            return north(north(bitboard) & empty) & empty;
         }
 
-        pub fn b_single_pawn_push(bitboard:u64) -> u64 { 
-            return south(bitboard);
+        pub fn b_single_pawn_push(bitboard:u64, empty:u64) -> u64 { 
+            return south(bitboard) & empty;
         }
 
-        pub fn b_double_pawn_push(bitboard:u64) -> u64 {
-            return south(south(bitboard));
+        pub fn b_double_pawn_push(bitboard:u64, empty:u64) -> u64 {
+            return south(south(bitboard) & empty) & empty;
         }
 
-        pub fn kings(bitboard:u64) -> u64 {
+        pub fn kings(bitboard:u64, empty:u64) -> u64 {
             let res: u64 = 
-                north(bitboard) & 
-                south(bitboard) & 
-                east(bitboard) & 
-                west(bitboard) & 
-                southeast(bitboard) & 
-                southwest(bitboard) & 
-                northeast(bitboard) & 
-                northwest(bitboard);
+                (north(bitboard) & empty) | 
+                (south(bitboard) & empty) | 
+                (east(bitboard) & empty) | 
+                (west(bitboard) & empty) | 
+                (southeast(bitboard) & empty) | 
+                (southwest(bitboard) & empty) | 
+                (northeast(bitboard) & empty) | 
+                (northwest(bitboard) & empty);
             return res;
         }
+
     }
 }
 
