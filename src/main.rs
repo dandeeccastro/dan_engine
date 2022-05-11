@@ -1,3 +1,5 @@
+use chess::*;
+
 fn main() {
-    println!("Hello, world!");
+    let _board: Board = generate_starter_board(); 
 }
